@@ -25,7 +25,7 @@ namespace Dapr.WebApiSample.Controllers
         [HttpGet("{id}")]
         public async Task<IActionResult> Get(string id)
         {
-            await this._httpClient.PostAsync("http://localhost:53034/v1.0/publish/topic1", new StringContent("{ \"status\": \"completed\", \"id\": \"1\"}"));
+            await this._httpClient.PostAsync($"http://localhost:{Environment.GetEnvironmentVariable("DAPR_HTTP_PORT")}/v1.0/publish/topic1", new StringContent("{ \"status\": \"completed\", \"id\": \"1\"}"));
 
             return new OkResult();
         }

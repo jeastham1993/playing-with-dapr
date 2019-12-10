@@ -20,6 +20,8 @@ namespace Dapr.Subscriber
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
+                    System.Console.WriteLine(Environment.GetEnvironmentVariable("DAPR_HTTP_PORT"));
+                    
                     webBuilder.UseStartup<Startup>();
                 });
     }
