@@ -1,17 +1,16 @@
+using System.Collections.Generic;
+using System.IO;
 using System.Text.Json;
-using System.Threading.Tasks;
-using Dapr;
+using Dapr.DispatchService.Domain.Models;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
-using System.IO;
-using System.Collections.Generic;
-using System.Text;
+using Newtonsoft.Json;
 
-namespace Dapr.Subscriber
+namespace Dapr.DispatchService
 {
     public class Startup
     {
@@ -48,45 +47,28 @@ namespace Dapr.Subscriber
             {
                 endpoints.MapGet("/dapr/subscribe", async context =>
                 {
-                    var subscribedTopics = new List<string>() { "topic1" };
-                    await context.Response.WriteAsync(JsonSerializer.Serialize(subscribedTopics));
+                    var subscribedTopics = new List<string>() { "neworder" };
+                    await context.Response.WriteAsync(JsonConvert.SerializeObject(subscribedTopics));
                 });
 
-                endpoints.MapPost("/topic1", async context =>
+                endpoints.MapPost("/neworder", async context =>
                 {
+                    System.Console.WriteLine("Handling new order");
+
                     using (var streamReader = new StreamReader(context.Request.Body))
                     {
                         var json = await streamReader.ReadToEndAsync();
 
-                        System.Console.WriteLine(json);
+                        System.Console.WriteLine($"Order content {json}");
+
+                        if (string.IsNullOrEmpty(json) == false){
+                            var order = JsonConvert.DeserializeObject<DaprContentWrapper<Order>>(json);
+
+                            File.WriteAllText($"C:\\Demonstration\\{order.Data.OrderNumber}.json", JsonConvert.SerializeObject(order, Formatting.Indented));
+                        }
                     }
                 });
-
-                endpoints.MapPost("/add", InvokedMethod);
             });
-
-            async Task InvokedMethod(HttpContext context)
-            {
-                var operands = await JsonSerializer.DeserializeAsync<Operands>(context.Request.Body);
-
-                await context.Response.WriteAsync("{ \"result\": " + operands.Sum + "}");
-            }
-        }
-    }
-
-    public class Operands
-    {
-        private Operands(){}
-        public decimal Operand1 { get; set; }
-
-        public decimal Operand2 { get; set; }
-
-        public decimal Sum
-        {
-            get
-            {
-                return Operand1 + Operand2;
-            }
         }
     }
 }

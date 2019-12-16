@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Dapr.Subscriber
+namespace Dapr.DispatchService
 {
     public class Program
     {
@@ -20,8 +20,6 @@ namespace Dapr.Subscriber
             Host.CreateDefaultBuilder(args)
                 .ConfigureWebHostDefaults(webBuilder =>
                 {
-                    System.Console.WriteLine(Environment.GetEnvironmentVariable("DAPR_HTTP_PORT"));
-                    
                     webBuilder.UseStartup<Startup>();
                 });
     }

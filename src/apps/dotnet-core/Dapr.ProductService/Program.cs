@@ -7,7 +7,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
 
-namespace Dapr.WebApiSample
+namespace Dapr.ProductService
 {
     public class Program
     {

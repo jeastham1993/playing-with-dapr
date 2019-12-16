@@ -1,0 +1,12 @@
+{
+  "Data": {
+    "OrderNumber": "1234",
+    "OrderDate": "2019-12-16T00:00:00",
+    "OrderLines": [
+      {
+        "ProductCode": "WIDGET",
+        "Quantity": 1
+      }
+    ]
+  }
+}
